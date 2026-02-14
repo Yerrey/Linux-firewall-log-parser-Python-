@@ -9,7 +9,7 @@ test_file = "/var/log/iptables.log.1"
 
 SRC = re.compile(r'\bSRC=(?P<src_ip>\d+\.\d+\.\d+\.\d+)')
 DST = re.compile(r'\bDST=(?P<dst_ip>\d+\.\d+\.\d+\.\d+)')
-PROTO = re.compile(r'\bPROTO=(?P<proto>TCP|UCP|ICMP)')
+PROTO = re.compile(r'\bPROTO=(?P<proto>TCP|UDP|ICMP)')
 SPT = re.compile(r'\bSPT=(?P<src_port>\d+)')
 DPT = re.compile(r'\bDPT=(?P<dst_port>\d+)')
 
