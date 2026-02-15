@@ -3,7 +3,7 @@
 import re
 import json 
 
-#testing different methods 
+#Branch created test different ways to store the output in a JSON file, and to have the script run against live logs 
 
 #test_file is a small snippet of the actual log. 
 test_file = "/var/log/iptables.log.1"
