@@ -3,6 +3,8 @@
 A Python-based log parser that extracts structured network telemetry from Linux iptables firewall logs. This script parses a log file specifically tailored to
 detect network scans using iptables and rsyslog. This is the start of this project, will be adding more.
 
+
+
 ## Overview
 
 This project parses raw iptables logs and extracts:
@@ -14,6 +16,13 @@ This project parses raw iptables logs and extracts:
 - Destination Port
 
 The output is structured as a Python dictionary for further analysis, alerting, or SIEM ingestion.
+
+## Architecture
+
+1. iptables logs suspicious TCP flag patterns (SYN, NULL, FIN, XMAS).
+2. rsyslog filters kernel log messages containing "NETWORK SCAN DETECTED".
+3. Logs are written to /var/log/iptables.log.
+4. Python parser extracts SRC/DST/FLAGS and outputs structured JSON.
 
 ## Example Log Line
 
