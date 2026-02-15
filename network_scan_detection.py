@@ -3,6 +3,7 @@
 import re
 import json 
 
+#testing different methods 
 
 #test_file is a small snippet of the actual log. 
 test_file = "/var/log/iptables.log.1"
