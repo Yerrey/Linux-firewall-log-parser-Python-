@@ -6,8 +6,10 @@ import datetime
 #Branch created test different ways to store the output in a JSON file, and to have the script run against live logs 
 
 #test_file is a small snippet of the actual log. 
-file = "/var/log/iptables.log.1"
+file = "/var/log/iptables.log"
 output_file = "/home/reyma/python_projects/ids_project/linux-firewall-log-parser/test_scans.jsonl"
+time = datetime.datetime.now().isoformat()
+
 
 #compiled regex patterns for syslog file 
 
@@ -21,18 +23,22 @@ DPT = re.compile(r'\bDPT=(?P<dst_port>\d+)')
 patterns = [SRC, DST, PROTO, SPT, DPT]
 
 
+
 def log_scan(scan_type, details, output_file):
     with open(output_file, "a") as out:
         scan_data = {
             "timestamp": datetime.datetime.now().isoformat(),
-            "scan_type": scan,
-            "details": extracted
+            "scan_type": scan_type,
+            "details": details
         }
         out.write(json.dumps(scan_data, indent = 4) + '\n')
 
 
 with open(file, 'r') as f:
     for line in f:
+        if "NETWORK SCAN DETECTED" not in line:
+            continue
+        
         extracted = {}
 
         for pattern in patterns:
@@ -76,3 +82,5 @@ with open(file, 'r') as f:
                 print()
             else:
                 continue
+                
+print(f"NET SCAN DETECTED AT {time}")
