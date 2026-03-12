@@ -31,7 +31,7 @@ def log_scan(scan_type, details, output_file):
             "scan_type": scan_type,
             "details": details
         }
-        out.write(json.dumps(scan_data, indent = 4) + '\n')
+        out.write(json.dumps(scan_data) + '\n')
 
 
 with open(file, 'r') as f:
@@ -83,4 +83,3 @@ with open(file, 'r') as f:
             else:
                 continue
                 
-print(f"NET SCAN DETECTED AT {time}")
