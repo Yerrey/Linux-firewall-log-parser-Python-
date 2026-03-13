@@ -2,10 +2,14 @@
 
 import re
 import json 
-
+import datetime 
+#Branch created test different ways to store the output in a JSON file, and to have the script run against live logs 
 
 #test_file is a small snippet of the actual log. 
-test_file = "/var/log/iptables.log.1"
+file = "/var/log/iptables.log"
+output_file = "/home/reyma/python_projects/ids_project/linux-firewall-log-parser/test_scans.jsonl"
+time = datetime.datetime.now().isoformat()
+
 
 #compiled regex patterns for syslog file 
 
@@ -19,8 +23,22 @@ DPT = re.compile(r'\bDPT=(?P<dst_port>\d+)')
 patterns = [SRC, DST, PROTO, SPT, DPT]
 
 
-with open(test_file, 'r') as f:
+
+def log_scan(scan_type, details, output_file):
+    with open(output_file, "a") as out:
+        scan_data = {
+            "timestamp": datetime.datetime.now().isoformat(),
+            "scan_type": scan_type,
+            "details": details
+        }
+        out.write(json.dumps(scan_data) + '\n')
+
+
+with open(file, 'r') as f:
     for line in f:
+        if "NETWORK SCAN DETECTED" not in line:
+            continue
+        
         extracted = {}
 
         for pattern in patterns:
@@ -40,28 +58,28 @@ with open(test_file, 'r') as f:
         if extracted:
             if FLAGS["SYN"] and not FLAGS["ACK"]:
                 scan = "SYN SCAN"
-                print(f"{scan} Detected: \n")
-                print(json.dumps(extracted, indent = 4))
+                log_scan(scan, extracted, output_file)
                 print()
+                
             elif FLAGS["FIN"] and FLAGS["PSH"] and FLAGS["URG"]:
                 scan = "XMAS SCAN"
-                print(f"{scan} Detected: \n")
-                print(json.dumps(extracted, indent = 4))
+                log_scan(scan, extracted, output_file)
                 print()
+                
             elif FLAGS["FIN"] and not FLAGS["SYN"]:
-                scan = "FIN SCAN" 
-                print(f"{scan} Detected: \n")
-                print(json.dumps(extracted, indent = 4))
+                scan = "FIN SCAN"
+                log_scan(scan, extracted, output_file)
                 print()
+                
             elif FLAGS["ACK"] and not FLAGS["SYN"]:
                 scan = "ACK SCAN"
-                print(f"{scan} Detected: \n")
-                print(json.dumps(extracted, indent = 4))
+                log_scan(scan, extracted, output_file)
                 print()
+                
             elif not any(FLAGS.values()):
                 scan = "NULL SCAN"
-                print(f"{scan} Detected: ")
-                print(json.dumps(extracted, indent = 4))
+                log_scan(scan , extracted, output_file)
                 print()
             else:
                 continue
+                
