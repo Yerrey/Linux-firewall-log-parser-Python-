@@ -3,15 +3,20 @@
 import re
 import json 
 import datetime 
-#Branch created test different ways to store the output in a JSON file, and to have the script run against live logs 
+import os 
+from dotenv import load_dotenv
 
-#test_file is a small snippet of the actual log. 
+load_dotenv()
+
+
+
+#file paths 
 file = "/var/log/iptables.log"
-output_file = "/home/reyma/python_projects/ids_project/linux-firewall-log-parser/test_scans.jsonl"
+output_file = os.getenv("OUTPUT_FILE")
 time = datetime.datetime.now().isoformat()
 
 
-#compiled regex patterns for syslog file 
+ 
 
 SRC = re.compile(r'\bSRC=(?P<src_ip>\d+\.\d+\.\d+\.\d+)')
 DST = re.compile(r'\bDST=(?P<dst_ip>\d+\.\d+\.\d+\.\d+)')
@@ -19,12 +24,13 @@ PROTO = re.compile(r'\bPROTO=(?P<proto>TCP|UDP|ICMP)')
 SPT = re.compile(r'\bSPT=(?P<src_port>\d+)')
 DPT = re.compile(r'\bDPT=(?P<dst_port>\d+)')
 
-#patterns to loop over 
+
 patterns = [SRC, DST, PROTO, SPT, DPT]
 
 
 
 def log_scan(scan_type, details, output_file):
+
     with open(output_file, "a") as out:
         scan_data = {
             "timestamp": datetime.datetime.now().isoformat(),
